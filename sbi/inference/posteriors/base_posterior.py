@@ -126,6 +126,11 @@ class NeuralPosterior:
         self.potential_fn = self.potential_fn.bind(self._x_else_default_x(x))
 
         theta = ensure_theta_batched(torch.as_tensor(theta))
+        if theta.shape[-1] != self._theta_dim:
+            raise ValueError(
+                f"Expected theta to have shape (..., {self._theta_dim}), "
+                f"but got theta with shape {tuple(theta.shape)}."
+            )
         return self.potential_fn(
             theta.to(self._device), track_gradients=track_gradients
         )
